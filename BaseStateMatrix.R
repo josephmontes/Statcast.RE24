@@ -180,8 +180,17 @@ dimnames(RUNS.out)[[1]] <- c("000", "001", "010", "011", "100", "101", "110", "1
 view(RUNS.out)
 
 
+
+
+
+# PART 2: Estimate the total change in run expectancy a pitcher was on the mound for this season
+
+# Reminder that the data is filtered to not include 9th inning or later, so starting pitchers make most sense to evaluate
+# Batters can be evaluated too if your 'player_name' column has the batter's name instead of pitcher's
+
+
 # Create 'RUNS_POTENTIAL' data frame to merge with 'pmatrix' 
-# 'RUNS_POTENTIAL' will be used as the base value to measure changes in run expectancy for pitch by pitch data
+# 'RUNS_POTENTIAL' will be used as the base value to measure changes in run expectancy play by play
 
 RUNS_POTENTIAL <- matrix(c(RUNS$x, rep(0, 8)), 32, 1)
 dimnames(RUNS_POTENTIAL) [[1]] <- c(RUNS$Group.1, "000 3", "001 3", "010 3", "011 3", "100 3", "101 3", "110 3", "111 3")
@@ -202,13 +211,7 @@ pmatrix$RUNS_NEW_STATE <- RUNS_POTENTIAL[pmatrix$NEW_STATE, ]
 pmatrix$RUNS_VALUE <- pmatrix$RUNS_NEW_STATE - pmatrix$RUNS_STATE + pmatrix$RUNS_SCORED
 
 
-
-
-# PART 2: Estimate the total change in run expectancy a pitcher was on the mound for this season
-
-# Reminder that the data is filtered to not include 9th inning or later, so starting pitchers make sense to evaluate
-# Batters can be evaluated too if your 'player_name' column has the batter's name instead of pitcher's
-
+# Now that there is a column estimating the change in run expectancy for each at bat, any player or situation can be evaluated
 
 # Subset different pitchers from 'pmatrix'
 
@@ -232,13 +235,13 @@ table(sandy$RUNNERS)
 
 # Use stripchart() and abline() to create a chart showing the distribution of 'RUNS_VALUE' (expected runs) in each possible base state
 
-with(cole, stripchart(RUNS_VALUE ~ RUNNERS, vertical = TRUE, jitter = 0.2, xlab = "RUNNERS", method = "jitter", pch=1, cex=0.8))
+with(cole, stripchart(RUNS_VALUE ~ RUNNERS, vertical = TRUE, jitter = 0.2, xlab = "RUNNERS", method = "jitter", pch=1, cex=0.8, main = player_name[1]))
 abline(h=0)
 
-with(irvin, stripchart(RUNS_VALUE ~ RUNNERS, vertical = TRUE, jitter = 0.2, xlab = "RUNNERS", method = "jitter", pch=1, cex=0.8))
+with(irvin, stripchart(RUNS_VALUE ~ RUNNERS, vertical = TRUE, jitter = 0.2, xlab = "RUNNERS", method = "jitter", pch=1, cex=0.8, main = player_name[1]))
 abline(h=0)
 
-with(sandy, stripchart(RUNS_VALUE ~ RUNNERS, vertical = TRUE, jitter = 0.2, xlab = "RUNNERS", method = "jitter", pch=1, cex=0.8))
+with(sandy, stripchart(RUNS_VALUE ~ RUNNERS, vertical = TRUE, jitter = 0.2, xlab = "RUNNERS", method = "jitter", pch=1, cex=0.8, main = player_name[1]))
 abline(h=0)
 
 
@@ -276,8 +279,9 @@ I
 S <- merge(S_PA, S_runs)
 S
 
-# Use sum() to find the degree of change in run expectancy that a pitcher was on the mound for throughout the season
-sum(C$RUNS) # -10.96 runs: Gerrit Cole
-sum(I$RUNS) #   5.88 runs: Cole Irvin
-sum(S$RUNS) # -28.49 runs: Sandy Alcantara
 
+# Use sum() to find the degree of change in run expectancy that a pitcher was on the mound for throughout the season
+
+sum(C$RUNS) # -11.58 runs: Gerrit Cole
+sum(I$RUNS) #   5.32 runs: Cole Irvin
+sum(S$RUNS) # -28.68 runs: Sandy Alcantara
